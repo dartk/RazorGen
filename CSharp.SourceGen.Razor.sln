@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharp.SourceGen.Razor", "C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharp.SourceGen.Razor.Tests", "CSharp.SourceGen.Razor.Tests\CSharp.SourceGen.Razor.Tests.csproj", "{2C711BD7-8CB6-4787-A9D9-9F056E93B8F2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test2", "Test2\Test2.csproj", "{ECAFB114-9A91-4A5F-B1C9-55D71ECA7BBF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{2C711BD7-8CB6-4787-A9D9-9F056E93B8F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2C711BD7-8CB6-4787-A9D9-9F056E93B8F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2C711BD7-8CB6-4787-A9D9-9F056E93B8F2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ECAFB114-9A91-4A5F-B1C9-55D71ECA7BBF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ECAFB114-9A91-4A5F-B1C9-55D71ECA7BBF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ECAFB114-9A91-4A5F-B1C9-55D71ECA7BBF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ECAFB114-9A91-4A5F-B1C9-55D71ECA7BBF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

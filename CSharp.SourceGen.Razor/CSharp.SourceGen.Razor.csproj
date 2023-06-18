@@ -19,12 +19,16 @@
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageTags>C# Razor templating code generation</PackageTags>
-        <PackageVersion>0.1.0-rc01</PackageVersion>
+        <PackageVersion>0.1.0-rc12</PackageVersion>
     </PropertyGroup>
 
     <ItemGroup>
         <None Include="./../README.md" Pack="true" PackagePath="/" />
     </ItemGroup>
+
+    <PropertyGroup>
+        <IncludeBuildOutput>false</IncludeBuildOutput>
+    </PropertyGroup>
 
     <ItemGroup>
         <!-- Package the generator in the analyzer directory of the nuget package -->
