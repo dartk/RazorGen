@@ -6,14 +6,20 @@ using Microsoft.CodeAnalysis.CSharp;
 namespace CSharp.SourceGen.Razor;
 
 
-public record RazorTemplateSource(string FileName, string TypeFullName, string GeneratedSource)
+public record RazorTemplateSource(string FileName, string TypeFullName,
+    string GeneratedSource)
 {
-    public RazorTemplateSyntaxTree ToSyntaxTree() =>
-        new(this.FileName, this.TypeFullName, CSharpSyntaxTree.ParseText(this.GeneratedSource));
+    public RazorTemplateSyntaxTree ToSyntaxTree() => new(this.FileName,
+        this.TypeFullName, CSharpSyntaxTree.ParseText(this.GeneratedSource));
 }
 
 
-public record RazorTemplateSyntaxTree(string FileName, string TypeFullName, SyntaxTree SyntaxTree);
+public record RazorTemplateSyntaxTree(string FileName, string TypeFullName,
+    SyntaxTree SyntaxTree)
+{
+    public string SuggestedGeneratedFileName() =>
+        $"[{(uint)this.FileName.GetHashCode()}] {Path.GetFileNameWithoutExtension(this.FileName)}.razor.cs";
+}
 
 
 public class RazorEngine
@@ -33,7 +39,8 @@ public class RazorEngine
                 builder.SetBaseType("TemplateBase");
                 builder.ConfigureClass((document, node) =>
                 {
-                    var className = "Template_" + Guid.NewGuid().ToString("N");
+                    var idStr = Guid.NewGuid().ToString("N").Substring(0, 8);
+                    var className = $"Template_{idStr}";
                     this._typeNameByPath[document.Source.FilePath] = className;
                     node.ClassName = className;
                 });

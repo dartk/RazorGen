@@ -7,6 +7,7 @@ public static class ScribanRazorMadness {
     var result = template.Render(new { name = "World" });
 
     @:public static string Hello() => "@(result)";
+    @* @:public static string Hello() => "Hello world!"; *@
 }
 
 }

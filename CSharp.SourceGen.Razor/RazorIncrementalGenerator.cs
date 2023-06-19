@@ -14,96 +14,86 @@ public class RazorIncrementalGenerator : IIncrementalGenerator
 
     public RazorIncrementalGenerator()
     {
+        this._netstandardReferences = GetNetstandardReferences();
         this._razorEngine = new RazorEngine();
-
-        var netstandardAssembly = Assembly.Load(
-            "netstandard, Version=2.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51");
-        var mscorlibAssembly = typeof(object).Assembly;
-
-        this._netstandardAssemblies = netstandardAssembly.GetReferencedAssemblies()
-            .Select(Assembly.Load)
-            .Append(netstandardAssembly)
-            .Append(mscorlibAssembly)
-            .ToImmutableArray();
-
-        this._netstandardAssemblyReferences =
-            this._netstandardAssemblies.Select(GetReferenceFromAssembly).ToImmutableArray();
     }
 
 
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        var referencesProvider = context.CompilationProvider
-            .SelectMany((compilation, _) => compilation.References.ToImmutableArray())
-            .Select((reference, _) =>
-            {
-                if (reference.Display == null) return null;
+        var provider = RazorTemplatesProvider().Combine(ProjectReferencesProvider());
+        context.RegisterSourceOutput(provider, this.GenerateSources);
+        return;
 
-                try
+
+        IncrementalValueProvider<bool> IsNetstandardProvider()
+        {
+            return context.ParseOptionsProvider.Select((options, _) =>
+                options.PreprocessorSymbolNames.Contains("NETSTANDARD2_0"));
+        }
+
+
+        IncrementalValueProvider<ImmutableArray<MetadataReference>> ProjectReferencesProvider()
+        {
+            return IsNetstandardProvider()
+                .Combine(context.CompilationProvider)
+                .Select((arg, _) =>
                 {
-                    var assembly = Assembly.LoadFile(reference.Display);
-                    var fullName = assembly.FullName;
-                    return new ReferenceInfo(fullName, reference);
-                }
-                catch
+                    var (isNetstandard, compilation) = arg;
+                    var references = isNetstandard
+                        ? compilation.References.ToImmutableArray()
+                        : ImmutableArray<MetadataReference>.Empty;
+
+                    foreach (var reference in references)
+                    {
+                        if (reference is not PortableExecutableReference { FilePath: { } filePath })
+                        {
+                            continue;
+                        }
+
+                        try
+                        {
+                            Assembly.LoadFrom(filePath);
+                        }
+                        // ReSharper disable once EmptyGeneralCatchClause
+                        catch
+                        {
+                        }
+                    }
+
+                    return references;
+                });
+        }
+
+        IncrementalValueProvider<ImmutableArray<RazorTemplateSyntaxTree>> RazorTemplatesProvider()
+        {
+            return context.AdditionalTextsProvider
+                .Select(static (file, token) =>
                 {
-                    return null;
-                }
-            })
-            .Where(x => x != null)
-            .Collect();
-
-        var additionalFiles = context.AdditionalTextsProvider
-            .Select(static (file, token) =>
-            {
-                var source = file.GetText(token)?.ToString() ?? string.Empty;
-                return new AdditionalFile(file.Path, source);
-            })
-            .Where(static x => x.IsNotEmpty);
-
-        var razorTemplates = additionalFiles
-            .Where(file =>
-                file.FilePath.EndsWith(".razor", StringComparison.InvariantCultureIgnoreCase)
-                && file.FileName[0] != '_'
-                && file.IsNotEmpty)
-            .Select((file, _) => this._razorEngine.GenerateRazorTemplateSource(file).ToSyntaxTree())
-            .Collect();
-
-        var provider = razorTemplates.Combine(referencesProvider);
-
-        context.RegisterSourceOutput(provider, this.GenerateSources!);
+                    var source = file.GetText(token)?.ToString() ?? string.Empty;
+                    return new AdditionalFile(file.Path, source);
+                })
+                .Where(static file => file.IsNotEmpty
+                    && file.FilePath.EndsWith(".razor", StringComparison.InvariantCultureIgnoreCase)
+                    && file.FileName[0] != '_'
+                    && file.IsNotEmpty)
+                .Select((file, _) =>
+                    this._razorEngine.GenerateRazorTemplateSource(file).ToSyntaxTree())
+                .Collect();
+        }
     }
 
 
     private void GenerateSources(SourceProductionContext context,
-        (ImmutableArray<RazorTemplateSyntaxTree>, ImmutableArray<ReferenceInfo>) arg)
+        (ImmutableArray<RazorTemplateSyntaxTree>, ImmutableArray<MetadataReference>) arg)
     {
         var (templates, projectReferences) = arg;
-        var referenceByName =
-            projectReferences.ToDictionary(x => x.AssemblyName, x => x.Reference);
-
-        Assembly ResolveAssembly(object sender, ResolveEventArgs args)
-        {
-            if (referenceByName.TryGetValue(args.Name, out var reference))
-            {
-                var assembly = Assembly.LoadFrom(reference.Display!);
-                return assembly;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        AppDomain.CurrentDomain.AssemblyResolve += ResolveAssembly;
+        var references = projectReferences.Concat(this._netstandardReferences);
 
         try
         {
-            var references = this._netstandardAssemblyReferences.Concat(
-                projectReferences.Select(x => x.Reference));
-
             var assemblyBytes = RazorEngine.EmitAssembly(templates.Select(x => x.SyntaxTree),
-                references!, context.ReportDiagnostic);
+                references, context.ReportDiagnostic);
             if (assemblyBytes == null)
             {
                 return;
@@ -121,11 +111,11 @@ public class RazorIncrementalGenerator : IIncrementalGenerator
                 var obj = Activator.CreateInstance(type);
                 Environment.CurrentDirectory = Path.GetDirectoryName(template.FileName);
                 var renderedText = (string)resultMethod.Invoke(obj, Array.Empty<object>());
-                context.AddSource(template.TypeFullName, renderedText);
+                context.AddSource(template.SuggestedGeneratedFileName(), renderedText);
             }
 
 
-            static MethodInfo? GetResultMethod(Assembly assembly)
+            static MethodInfo GetResultMethod(Assembly assembly)
             {
                 const string typeName = "TemplateBase";
                 var type = assembly.GetType(typeName)
@@ -136,10 +126,6 @@ public class RazorIncrementalGenerator : IIncrementalGenerator
         catch (Exception ex)
         {
             context.ReportDiagnostic(Diagnostic.Create(Error, Location.None, ex.ToString()));
-        }
-        finally
-        {
-            AppDomain.CurrentDomain.AssemblyResolve -= ResolveAssembly;
         }
     }
 
@@ -153,17 +139,25 @@ public class RazorIncrementalGenerator : IIncrementalGenerator
         isEnabledByDefault: true);
 
 
-    private readonly ImmutableArray<Assembly> _netstandardAssemblies;
-    private readonly ImmutableArray<MetadataReference> _netstandardAssemblyReferences;
+    private readonly ImmutableArray<MetadataReference> _netstandardReferences;
 
 
     private const string DiagnosticIdPrefix = "SourceGen.Razor";
     private const string DiagnosticCategory = "CSharp.SourceGen.Razor";
 
 
-    private static MetadataReference GetReferenceFromAssembly(Assembly assembly) =>
-        MetadataReference.CreateFromFile(assembly.Location);
+    private static ImmutableArray<MetadataReference> GetNetstandardReferences()
+    {
+        var assembly = Assembly.GetExecutingAssembly();
+        var resourceNames = assembly.GetManifestResourceNames();
+        var builder = ImmutableArray.CreateBuilder<MetadataReference>(resourceNames.Length);
+        foreach (var name in resourceNames)
+        {
+            using var stream = assembly.GetManifestResourceStream(name)!;
+            var reference = MetadataReference.CreateFromStream(stream);
+            builder.Add(reference);
+        }
 
-
-    private record ReferenceInfo(string AssemblyName, MetadataReference Reference);
+        return builder.MoveToImmutable();
+    }
 }
