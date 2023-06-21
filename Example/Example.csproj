@@ -5,10 +5,11 @@
         <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <RunAnalyzersDuringLiveAnalysis>False</RunAnalyzersDuringLiveAnalysis>
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Example.Templates\Example.Templates.csproj" />
+      <ProjectReference Include="..\Example.Netstandard2_0\Example.Netstandard2_0.csproj" />
     </ItemGroup>
 
 </Project>
