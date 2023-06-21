@@ -61,8 +61,8 @@
     </Target>
 
     <ItemGroup>
-        <None Remove="netstandard\*" />
-        <EmbeddedResource Include="netstandard\*" />
+        <None Remove="netstandard\*.dll" />
+        <EmbeddedResource Include="netstandard\*.dll" />
     </ItemGroup>
 
 </Project>
