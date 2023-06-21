@@ -18,7 +18,7 @@ public record RazorTemplateSyntaxTree(string FileName, string TypeFullName,
     SyntaxTree SyntaxTree)
 {
     public string SuggestedGeneratedFileName() =>
-        $"[{(uint)this.FileName.GetHashCode()}] {Path.GetFileNameWithoutExtension(this.FileName)}.razor.cs";
+        $"{Path.GetFileNameWithoutExtension(this.FileName)}.razor.cs_{(uint)this.FileName.GetHashCode()}";
 }
 
 

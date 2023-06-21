@@ -1,0 +1,11 @@
+namespace Example.Templates;
+
+public static partial class HelloWorld
+{
+
+@{
+    var message = "Hello, World!";
+    @:public static string SayIt() => "@(message)";
+}
+
+}

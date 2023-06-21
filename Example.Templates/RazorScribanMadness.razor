@@ -1,0 +1,17 @@
+namespace Example.Templates;
+
+public static partial class RazorScribanMadness
+{
+
+@using Scriban
+@{
+    @:public static string OhMyGoodnessWhy() => "@(RenderScriban())";
+
+    string RenderScriban()
+    {
+        var template = Template.Parse("Because {{ reason }}!");
+        return template.Render(new { reason = "you can" });
+    }
+}
+
+}
