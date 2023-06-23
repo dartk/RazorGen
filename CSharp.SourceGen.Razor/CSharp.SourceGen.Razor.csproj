@@ -19,7 +19,7 @@
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageTags>C# Razor templating code generation</PackageTags>
-        <PackageVersion>0.1.0</PackageVersion>
+        <PackageVersion>0.2.0-rc05</PackageVersion>
     </PropertyGroup>
 
     <ItemGroup>
@@ -37,14 +37,28 @@
         <None Include="$(PkgSystem_Runtime_CompilerServices_Unsafe)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
         <None Include="$(PkgSystem_Reflection_Metadata)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
         <None Include="$(PkgMicrosoft_NETCore_Platforms)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+        <None Include="$(PkgNewtonsoft_Json)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
     </ItemGroup>
 
     <ItemGroup>
         <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.0.1" PrivateAssets="all" />
         <PackageReference Include="Microsoft.NETCore.Platforms" Version="1.1.0" PrivateAssets="all" GeneratePathProperty="true" />
         <PackageReference Include="Microsoft.AspNetCore.Razor.Language" Version="6.0.1" PrivateAssets="all" GeneratePathProperty="true" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.3" PrivateAssets="all" GeneratePathProperty="true" />
         <PackageReference Include="System.Reflection.Metadata" Version="5.0.0" PrivateAssets="all" GeneratePathProperty="true" />
         <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="5.0.0" PrivateAssets="all" GeneratePathProperty="true" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <EmbeddedResource Include="..\AssemblyRunner\bin\Release\net7.0\AssemblyRunner.dll">
+            <Link>Runner\AssemblyRunner.dll</Link>
+        </EmbeddedResource>
+        <EmbeddedResource Include="..\AssemblyRunner\bin\Release\net7.0\AssemblyRunner.runtimeconfig.json">
+            <Link>Runner\AssemblyRunner.runtimeconfig.json</Link>
+        </EmbeddedResource>
+        <Compile Include="..\AssemblyRunner\Shared.cs">
+            <Link>Runner\Shared.cs</Link>
+        </Compile>
     </ItemGroup>
 
     <PropertyGroup>
@@ -57,6 +71,7 @@
             <TargetPathWithTargetPlatformMoniker Include="$(PkgSystem_Runtime_CompilerServices_Unsafe)\lib\netstandard2.0\*.dll" IncludeRuntimeDependency="false" />
             <TargetPathWithTargetPlatformMoniker Include="$(PkgSystem_Reflection_Metadata)\lib\netstandard2.0\*.dll" IncludeRuntimeDependency="false" />
             <TargetPathWithTargetPlatformMoniker Include="$(PkgMicrosoft_NETCore_Platforms)\lib\netstandard2.0\*.dll" IncludeRuntimeDependency="false" />
+            <TargetPathWithTargetPlatformMoniker Include="$(PkgNewtonsoft_Json)\lib\netstandard2.0\*.dll" IncludeRuntimeDependency="false" />
         </ItemGroup>
     </Target>
 
@@ -64,5 +79,9 @@
         <None Remove="netstandard\*.dll" />
         <EmbeddedResource Include="netstandard\*.dll" />
     </ItemGroup>
+
+    <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+      <Exec Command="dotnet build ../AssemblyRunner/AssemblyRunner.csproj -c Release" />
+    </Target>
 
 </Project>
