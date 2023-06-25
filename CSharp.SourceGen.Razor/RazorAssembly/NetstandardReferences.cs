@@ -2,7 +2,7 @@
 using Microsoft.CodeAnalysis;
 
 
-namespace CSharp.SourceGen.Razor.RazorEngine;
+namespace CSharp.SourceGen.Razor.RazorAssembly;
 
 
 public readonly struct NetstandardReferences

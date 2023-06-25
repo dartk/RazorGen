@@ -1,13 +1,13 @@
 using System.Collections.Immutable;
 using System.Reflection;
-using CSharp.SourceGen.Razor.RazorEngine;
+using CSharp.SourceGen.Razor.RazorAssembly;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Newtonsoft.Json;
 using Xunit.Abstractions;
 
 
-namespace RazorEngine.Tests;
+namespace CSharp.SourceGen.Razor.Tests;
 
 
 [UsesVerify]
@@ -45,7 +45,7 @@ public class UnitTests : VerifyBase
     [Fact]
     public Task RazorProjectEngineExTest()
     {
-        var engine = new RazorEngine("TemplateBase");
+        var engine = new RazorEngine();
         var source = engine.GenerateClassForTemplate("MyTemplate", """
 public static class GeneratedClass {
     @for (var i = 0; i < 10; ++i) {
@@ -59,7 +59,7 @@ public static class GeneratedClass {
 
 
     [Fact]
-    public async Task Foo()
+    public void EmitAssembly()
     {
         var templateClassName = "MyTemplate";
         var templateSource = """
@@ -70,7 +70,7 @@ public static class GeneratedClass {
 }
 """;
 
-        var engine = new RazorEngine("TemplateBase");
+        var engine = new RazorEngine();
         var compiler = new CSharpCompiler();
 
         var usingsSyntaxTree = CSharpSyntaxTree.ParseText("""
@@ -81,18 +81,15 @@ global using System.Linq;
 global using System.Reflection;
 global using System.Threading;
 global using System.Threading.Tasks;
-global using RazorEngine.Templates;
 """);
-
-        var reference = MetadataReference.CreateFromFile(typeof(TemplateBase).Assembly.Location);
 
         var generatedClass = engine.GenerateClassForTemplate(templateClassName, templateSource);
         var syntaxTree = CSharpSyntaxTree.ParseText(generatedClass);
         var trees = new[] { syntaxTree, usingsSyntaxTree };
-        var references = new[] { reference };
         var runner = new AssemblyRunner();
 
-        var assemblyBytes = compiler.EmitAssemblyNetstandard2_0(trees, references,
+        var assemblyBytes = compiler.EmitAssemblyNetstandard2_0(trees,
+            Array.Empty<MetadataReference>(),
             diagnostic => this._output.WriteLine(diagnostic.ToString()));
 
         var file = new DisposableFile("output.dll");

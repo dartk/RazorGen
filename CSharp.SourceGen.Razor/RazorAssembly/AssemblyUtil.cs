@@ -1,7 +1,7 @@
 using System.Reflection;
 
 
-namespace CSharp.SourceGen.Razor.RazorEngine;
+namespace CSharp.SourceGen.Razor.RazorAssembly;
 
 
 public static class AssemblyUtil
@@ -15,13 +15,5 @@ public static class AssemblyUtil
         var resourceNames = CurrentAssembly.GetManifestResourceNames();
         return resourceNames.Where(static name =>
             name.StartsWith(ResourceNamePrefix + "netstandard"));
-    }
-
-
-    public static IEnumerable<string> GetRunnerNames()
-    {
-        var resourceNames = CurrentAssembly.GetManifestResourceNames();
-        return resourceNames.Where(static name =>
-            name.StartsWith("CSharp.SourceGen.Razor.Runner"));
     }
 }

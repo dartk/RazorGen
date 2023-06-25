@@ -14,20 +14,17 @@ internal static class Program
     public static void Main()
     {
         var line = Console.ReadLine();
-
         if (string.IsNullOrWhiteSpace(line)) return;
         if (!TryReadInput(line, out var input)) return;
+        VerifyInputOrThrow(input);
 
-        VerifyInput(input);
         var output = GenerateOutput(input);
-
         var json = JsonSerializer.Serialize(output);
-
         Console.WriteLine(json);
     }
 
 
-    private static void VerifyInput(AssemblyRunnerInput input)
+    private static void VerifyInputOrThrow(AssemblyRunnerInput input)
     {
         AssertFileExists(input.AssemblyPath);
         foreach (var path in input.References)

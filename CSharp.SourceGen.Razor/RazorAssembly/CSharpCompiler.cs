@@ -2,7 +2,7 @@
 using Microsoft.CodeAnalysis.CSharp;
 
 
-namespace CSharp.SourceGen.Razor.RazorEngine;
+namespace CSharp.SourceGen.Razor.RazorAssembly;
 
 
 public class CSharpCompiler

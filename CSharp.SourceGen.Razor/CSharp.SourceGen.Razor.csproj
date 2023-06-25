@@ -19,7 +19,7 @@
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageTags>C# Razor templating code generation</PackageTags>
-        <PackageVersion>0.2.0-rc05</PackageVersion>
+        <PackageVersion>0.2.0-rc06</PackageVersion>
     </PropertyGroup>
 
     <ItemGroup>
@@ -51,13 +51,13 @@
 
     <ItemGroup>
         <EmbeddedResource Include="..\AssemblyRunner\bin\Release\net7.0\AssemblyRunner.dll">
-            <Link>Runner\AssemblyRunner.dll</Link>
+            <Link>RazorAssembly\Runner\AssemblyRunner.dll</Link>
         </EmbeddedResource>
         <EmbeddedResource Include="..\AssemblyRunner\bin\Release\net7.0\AssemblyRunner.runtimeconfig.json">
-            <Link>Runner\AssemblyRunner.runtimeconfig.json</Link>
+            <Link>RazorAssembly\Runner\AssemblyRunner.runtimeconfig.json</Link>
         </EmbeddedResource>
         <Compile Include="..\AssemblyRunner\Shared.cs">
-            <Link>Runner\Shared.cs</Link>
+            <Link>RazorAssembly\Runner\Shared.cs</Link>
         </Compile>
     </ItemGroup>
 

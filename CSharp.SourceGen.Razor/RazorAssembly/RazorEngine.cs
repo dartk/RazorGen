@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Razor.Language;
 
 
-namespace CSharp.SourceGen.Razor.RazorEngine;
+namespace CSharp.SourceGen.Razor.RazorAssembly;
 
 
 public class RazorEngine

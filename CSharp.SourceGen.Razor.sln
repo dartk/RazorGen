@@ -8,7 +8,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example.Netstandard2_0", "E
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AssemblyRunner", "AssemblyRunner\AssemblyRunner.csproj", "{12863676-12F6-4504-97A9-447253345719}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RazorEngine.Tests", "RazorEngine.Tests\RazorEngine.Tests.csproj", "{A7A5D9FC-8936-4443-84F7-97E08314143E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharp.SourceGen.Razor.Tests", "CSharp.SourceGen.Razor.Tests\CSharp.SourceGen.Razor.Tests.csproj", "{A7A5D9FC-8936-4443-84F7-97E08314143E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

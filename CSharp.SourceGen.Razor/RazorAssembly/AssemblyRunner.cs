@@ -6,7 +6,7 @@ using AssemblyRunnerShared;
 using Newtonsoft.Json;
 
 
-namespace CSharp.SourceGen.Razor.RazorEngine;
+namespace CSharp.SourceGen.Razor.RazorAssembly;
 
 
 public class AssemblyRunner
@@ -104,7 +104,7 @@ public class AssemblyRunner
 
     private static string ExtractRunner()
     {
-        const string prefix = AssemblyUtil.ResourceNamePrefix + "Runner.";
+        const string prefix = AssemblyUtil.ResourceNamePrefix + "RazorAssembly.Runner.";
         CopyToFile(prefix + AssemblyName, AssemblyFilePath);
         CopyToFile(prefix + ConfigName, ConfigFilePath);
 
@@ -128,7 +128,6 @@ public class AssemblyRunner
 
     private static readonly string Directory =
         Path.GetDirectoryName(typeof(AssemblyRunner).Assembly.Location)!;
-    // Path.Combine(Path.GetTempPath(), "8e7bcebf-6516-4514-85fe-a9603e62d81f");
 
 
     private const string AssemblyName = "AssemblyRunner.dll";

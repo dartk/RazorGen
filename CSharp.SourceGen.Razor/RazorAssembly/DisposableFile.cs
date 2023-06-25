@@ -1,4 +1,4 @@
-﻿namespace CSharp.SourceGen.Razor.RazorEngine;
+﻿namespace CSharp.SourceGen.Razor.RazorAssembly;
 
 
 public readonly record struct DisposableFile(string Path) : IDisposable

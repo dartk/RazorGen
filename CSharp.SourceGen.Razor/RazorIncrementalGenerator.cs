@@ -1,5 +1,5 @@
 ﻿using System.Collections.Immutable;
-using CSharp.SourceGen.Razor.RazorEngine;
+using CSharp.SourceGen.Razor.RazorAssembly;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 
@@ -10,12 +10,12 @@ namespace CSharp.SourceGen.Razor;
 [Generator(LanguageNames.CSharp)]
 public class RazorIncrementalGenerator : IIncrementalGenerator
 {
-    private readonly RazorEngine.RazorEngine _razorEngine;
+    private readonly RazorEngine _razorEngine;
 
 
     public RazorIncrementalGenerator()
     {
-        this._razorEngine = new RazorEngine.RazorEngine();
+        this._razorEngine = new RazorEngine();
         this._compiler = new CSharpCompiler();
         this._assemblyRunner = new AssemblyRunner();
     }
