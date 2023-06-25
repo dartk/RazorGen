@@ -2,6 +2,12 @@
 
 A C# source generator that renders Razor templates.
 
+> **Warning**: The source generator requires .NET 7 installed and `dotnet` command available. More
+> details in [Source generation](#source-generation) section.
+
+> **Info**: If the project targets `.NET Standard 2.0`, then the project's references can be used in
+> Razor templates.
+
 - [Installation](#installation)
 - [Source generation](#source-generation)
 - [Saving generated files](#saving-generated-files)
@@ -17,8 +23,9 @@ To avoid propagating dependency on the package set the option `PrivateAssets="al
 file:
 
 ```xml
+
 <ItemGroup>
-    <PackageReference Include="Dartk.CSharp.SourceGen.Razor" Version="0.1.0" PrivateAssets="All" />
+    <PackageReference Include="Dartk.CSharp.SourceGen.Razor" Version="0.2.0" PrivateAssets="All" />
 </ItemGroup>
 ```
 
@@ -26,6 +33,7 @@ Include razor template files with *.razor* extension to the project as `Addition
 example, to render all razor templates in the project add this to the project file:
 
 ```xml
+
 <ItemGroup>
     <AdditionalFiles Include="**/*.razor" />
 </ItemGroup>
@@ -35,20 +43,19 @@ A [complete example](#example) is presented below.
 
 ## Source generation
 
-> **Info**: If the project targets `.NET Standard 2.0`, then the project's references can be used in
-> Razor templates.
-
 Razor engine does not render a template directly, instead it generates a C# class that has a
 method that returns a rendered output. In order to render a template, an intermediate library
 with Razor generated classes needs to be compiled.
 
 The source generator passes all found `.razor` (included to the project as `AdditionalFiles`)
 templates to the Razor engine, which generates C# classes that render templates. Those classes are
-compiled into a temporary intermediate library, this library is being loaded, and for each class a
-rendering method is being invoked.
+compiled into a temporary intermediate library.
 
-Since the source generator targets `.NET Standard 2.0`, the intermediate library with Razor classes
-also targets `.NET Standard 2.0`. If the project targets `.NET Standard 2.0`, then the project's
+Source generators target `.NET Standard 2.0` which does not support assembly unloading. In order to
+prevent memory leak by repeated assembly loading, the intermediate library is called in
+a separate process by an external .NET 7 executable.
+
+If the project that uses the source generator targets `.NET Standard 2.0`, then the project's
 references will be referenced by the intermediate library.
 
 ## Saving generated files
@@ -57,10 +64,12 @@ To save the generated source files set properties `EmitCompilerGeneratedFiles`
 and `CompilerGeneratedFilesOutputPath` in the project file:
 
 ```xml
+
 <PropertyGroup>
     <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
     <!--Generated files will be saved to 'obj\GeneratedFiles' folder-->
-    <CompilerGeneratedFilesOutputPath>$(BaseIntermediateOutputPath)\GeneratedFiles</CompilerGeneratedFilesOutputPath>
+    <CompilerGeneratedFilesOutputPath>$(BaseIntermediateOutputPath)\GeneratedFiles
+    </CompilerGeneratedFilesOutputPath>
 </PropertyGroup>
 ```
 
@@ -76,6 +85,7 @@ Install the package `Dartk.CSharp.SourceGen.Razor` and set the property `Private
 editing the project file *Example.csproj*:
 
 ```xml
+
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
@@ -86,7 +96,8 @@ editing the project file *Example.csproj*:
 
     <ItemGroup>
         <!--PrivateAssets="All" prevents propagation of dependency to other projects-->
-        <PackageReference Include="Dartk.CSharp.SourceGen.Razor" Version="0.1.0" PrivateAssets="All"/>
+        <PackageReference Include="Dartk.CSharp.SourceGen.Razor" Version="0.2.0"
+                          PrivateAssets="All" />
 
         <!--Scriban can be used within Razor templates, since the target platform is netstandard2.0-->
         <PackageReference Include="Scriban" Version="5.7.0" />
