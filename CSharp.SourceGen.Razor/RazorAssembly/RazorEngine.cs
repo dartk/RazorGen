@@ -17,16 +17,16 @@ public class RazorEngine
                 builder.SetBaseType("TemplateBase");
                 builder.ConfigureClass((document, node) =>
                 {
-                    var className = document.Source.FilePath;
+                    var className = ClassNameFromFilePath.GetClassName(document.Source.FilePath);
                     node.ClassName = className;
                 });
             });
     }
 
 
-    public string GenerateClassForTemplate(string className, string template)
+    public string GenerateClassForTemplate(string fileName, string template)
     {
-        var document = RazorSourceDocument.Create(template, fileName: className);
+        var document = RazorSourceDocument.Create(template, fileName);
 
         var codeDocument = this._engine.Process(
             document,

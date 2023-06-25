@@ -2,6 +2,7 @@
 using CSharp.SourceGen.Razor.RazorAssembly;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Newtonsoft.Json;
 
 
 namespace CSharp.SourceGen.Razor;
@@ -24,7 +25,7 @@ public class RazorIncrementalGenerator : IIncrementalGenerator
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
         var provider = RazorTemplatesProvider().Combine(ProjectReferencesProvider());
-        context.RegisterImplementationSourceOutput(provider, this.GenerateSources);
+        context.RegisterSourceOutput(provider, this.GenerateSources);
         return;
 
         // Non-empty additional files with '.razor' extension except those that start
@@ -45,11 +46,10 @@ public class RazorIncrementalGenerator : IIncrementalGenerator
                     && file.IsNotEmpty)
                 .Select((file, _) =>
                 {
-                    var randomStr = Guid.NewGuid().ToString("N").Substring(0, 8);
-                    var className = "Template_" + randomStr;
-                    var source = this._razorEngine.GenerateClassForTemplate(className, file.Text);
-                    var syntaxTree = CSharpSyntaxTree.ParseText(source);
-                    return new RazorTemplateSyntaxTree(file.FilePath, className, syntaxTree);
+                    var source =
+                        this._razorEngine.GenerateClassForTemplate(file.FilePath, file.Text);
+                    var syntaxTree = CSharpSyntaxTree.ParseText(source, path: file.FilePath);
+                    return new RazorTemplateSyntaxTree(file.FilePath, syntaxTree);
                 })
                 .Collect();
         }
@@ -119,7 +119,7 @@ public class RazorIncrementalGenerator : IIncrementalGenerator
                 if (!renderedTextByClassName.TryGetValue(template.ClassName, out var renderedText))
                 {
                     context.ReportDiagnostic(Diagnostic.Create(Error, Location.None,
-                        $"'{template.ClassName}' was not rendered"));
+                        $"'{template.FileName}' was not rendered"));
                     continue;
                 }
 
@@ -149,8 +149,11 @@ public class RazorIncrementalGenerator : IIncrementalGenerator
 }
 
 
-public record RazorTemplateSyntaxTree(string FileName, string ClassName, SyntaxTree SyntaxTree)
+public record RazorTemplateSyntaxTree(string FileName, SyntaxTree SyntaxTree)
 {
     public string SuggestedGeneratedFileName() =>
         $"{Path.GetFileNameWithoutExtension(this.FileName)}.razor.cs_{(uint)this.FileName.GetHashCode()}";
+
+
+    public string ClassName => ClassNameFromFilePath.GetClassName(this.FileName);
 }
