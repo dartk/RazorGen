@@ -25,7 +25,7 @@ file:
 ```xml
 
 <ItemGroup>
-    <PackageReference Include="Dartk.CSharp.SourceGen.Razor" Version="0.2.0" PrivateAssets="All" />
+    <PackageReference Include="Dartk.CSharp.SourceGen.Razor" Version="0.2.1" PrivateAssets="All" />
 </ItemGroup>
 ```
 
@@ -96,7 +96,7 @@ editing the project file *Example.csproj*:
 
     <ItemGroup>
         <!--PrivateAssets="All" prevents propagation of dependency to other projects-->
-        <PackageReference Include="Dartk.CSharp.SourceGen.Razor" Version="0.2.0"
+        <PackageReference Include="Dartk.CSharp.SourceGen.Razor" Version="0.2.1"
                           PrivateAssets="All" />
 
         <!--Scriban can be used within Razor templates, since the target platform is netstandard2.0-->
