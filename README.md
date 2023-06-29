@@ -1,4 +1,4 @@
-# CSharp.SourceGen.Razor
+# RazorGen
 
 A C# source generator that renders Razor templates.
 
@@ -16,7 +16,7 @@ A C# source generator that renders Razor templates.
 ## Installation
 
 ```text
-dotnet add package Dartk.CSharp.SourceGen.Razor
+dotnet add package Dartk.RazorGen
 ```
 
 To avoid propagating dependency on the package set the option `PrivateAssets="all"` in the project
@@ -25,7 +25,7 @@ file:
 ```xml
 
 <ItemGroup>
-    <PackageReference Include="Dartk.CSharp.SourceGen.Razor" Version="0.2.1" PrivateAssets="All" />
+    <PackageReference Include="Dartk.RazorGen" Version="0.2.2" PrivateAssets="All" />
 </ItemGroup>
 ```
 
@@ -81,7 +81,7 @@ Create a new console C# project:
 dotnet new Example.Netstandard2_0
 ```
 
-Install the package `Dartk.CSharp.SourceGen.Razor` and set the property `PrivateAssets="All"` by
+Install the package `Dartk.RazorGen` and set the property `PrivateAssets="All"` by
 editing the project file *Example.csproj*:
 
 ```xml
@@ -96,7 +96,7 @@ editing the project file *Example.csproj*:
 
     <ItemGroup>
         <!--PrivateAssets="All" prevents propagation of dependency to other projects-->
-        <PackageReference Include="Dartk.CSharp.SourceGen.Razor" Version="0.2.1"
+        <PackageReference Include="Dartk.RazorGen" Version="0.2.2"
                           PrivateAssets="All" />
 
         <!--Scriban can be used within Razor templates, since the target platform is netstandard2.0-->
