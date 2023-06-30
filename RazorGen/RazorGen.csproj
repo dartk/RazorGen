@@ -14,8 +14,8 @@
         <Authors>Dmitry Artemkin</Authors>
         <Copyright>2023</Copyright>
         <Description>Generate C# code from Razor templates</Description>
-        <PackageProjectUrl>https://github.com/dartk/razorgen</PackageProjectUrl>
-        <RepositoryUrl>https://github.com/dartk/razorgen</RepositoryUrl>
+        <PackageProjectUrl>https://github.com/dartk/RazorGen</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/dartk/RazorGen</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageReadmeFile>README.md</PackageReadmeFile>
