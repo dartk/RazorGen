@@ -51,10 +51,10 @@
     </ItemGroup>
 
     <ItemGroup>
-        <EmbeddedResource Include="..\AssemblyRunner\bin\Release\net6.0\AssemblyRunner.dll">
+        <EmbeddedResource Include="..\AssemblyRunner\bin\Release\net7.0\AssemblyRunner.dll">
             <Link>RazorAssembly\Runner\AssemblyRunner.dll</Link>
         </EmbeddedResource>
-        <EmbeddedResource Include="..\AssemblyRunner\bin\Release\net6.0\AssemblyRunner.runtimeconfig.json">
+        <EmbeddedResource Include="..\AssemblyRunner\bin\Release\net7.0\AssemblyRunner.runtimeconfig.json">
             <Link>RazorAssembly\Runner\AssemblyRunner.runtimeconfig.json</Link>
         </EmbeddedResource>
         <Compile Include="..\AssemblyRunner\Shared.cs">

@@ -2,8 +2,9 @@
 
 A C# source generator that renders Razor templates.
 
-> **Warning**: The source generator requires .NET 6 installed and `dotnet` command available. More
-> details in [Source generation](#source-generation) section.
+> **Warning**: The source generator requires .NET 7 runtime installed and `dotnet`
+> command available. See [Source generation](#source-generation) section for more information about
+> the source generation process.
 
 > **Info**: If the project targets `.NET Standard 2.0`, then the project's references can be used in
 > Razor templates.

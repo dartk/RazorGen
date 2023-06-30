@@ -153,8 +153,8 @@ public class RazorGen : IIncrementalGenerator
 
     private static readonly DiagnosticDescriptor RuntimeIsMissingError = new(
         id: $"{DiagnosticIdPrefix}01",
-        title: ".NET 6 runtime is missing",
-        messageFormat: "RazorGen requires .NET 6 runtime installed.",
+        title: ".NET 7 runtime is missing",
+        messageFormat: "RazorGen requires .NET 7 runtime installed.",
         category: DiagnosticCategory,
         DiagnosticSeverity.Error,
         isEnabledByDefault: true);
