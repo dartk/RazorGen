@@ -5,14 +5,15 @@ namespace Example.Netstandard2_0;
 // in places where the class is being used.
 public static partial class RazorScribanMadness
 {
-    @using Scriban
-    @{
-        @:public static string Why() => "@(RenderScriban())";
+@using Scriban
+@{
+    @:public static string Why() => "@(RenderScriban())";
+    @:public static int GetInt() => @(SubDir.Functions.MyIntFunction());
 
-        string RenderScriban()
-        {
-            var template = Template.Parse("Because {{ reason }}!");
-            return template.Render(new { reason = "you can" });
-        }
+    string RenderScriban()
+    {
+        var template = Template.Parse("Because {{ reason }}!");
+        return template.Render(new { reason = "you can" });
     }
+}
 }

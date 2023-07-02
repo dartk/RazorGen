@@ -128,7 +128,7 @@ public class RazorGen : IIncrementalGenerator
                         if (!renderedTextByClassName.TryGetValue(template.ClassName,
                             out var renderedText))
                         {
-                            context.ReportDiagnostic(Diagnostic.Create(RuntimeIsMissingError,
+                            context.ReportDiagnostic(Diagnostic.Create(UnexpectedError,
                                 Location.None,
                                 $"'{template.FileName}' was not rendered"));
                             continue;
@@ -182,5 +182,5 @@ public record RazorTemplateSyntaxTree(string FileName, SyntaxTree SyntaxTree)
         $"{Path.GetFileNameWithoutExtension(this.FileName)}.razor.cs_{(uint)this.FileName.GetHashCode()}";
 
 
-    public string ClassName => ClassNameFromFilePath.GetClassName(this.FileName);
+    public string ClassName => PathUtil.GetFullClassNameFromFilePath(this.FileName);
 }

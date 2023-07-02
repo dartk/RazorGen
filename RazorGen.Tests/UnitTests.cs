@@ -20,6 +20,24 @@ public class UnitTests : VerifyBase
 
 
     [Fact]
+    public void NamesFromPath()
+    {
+        var data = new[]
+        {
+            (@"C:\Users\user\Template.razor", new[] { "C", "Users", "user", "Template" }),
+            (@"/C/Users/user/Template.razor", new[] { "C", "Users", "user", "Template" }),
+            (@"C:\Users\user\My Template.razor", new[] { "C", "Users", "user", "My_Template" }),
+            (@"C:\Users\2 user\12 My Template.razor", new[] { "C", "Users", "_2_user", "_12_My_Template" }),
+        };
+
+        foreach (var (input, output) in data)
+        {
+            Assert.Equal(output, PathUtil.GetNames(input));
+        }
+    }
+
+
+    [Fact]
     public void CSharpCompilerTest()
     {
         var compiler = new CSharpCompiler();

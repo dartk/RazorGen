@@ -42,8 +42,8 @@ internal static class Program
             Assembly.LoadFrom(reference);
         }
 
-        var templateBaseType = assembly.GetType("Templates.TemplateBase")
-            ?? throw new NullReferenceException("TemplateBase class not found.");
+        var templateBaseType = assembly.GetType("__TemplateBase")
+            ?? throw new NullReferenceException("__TemplateBase class not found.");
 
         var resultMethod = templateBaseType.GetMethod("Result")
             ?? throw new NullReferenceException("Result method not found in TemplateBase.");
@@ -61,7 +61,7 @@ internal static class Program
             var template = Activator.CreateInstance(type)
                 ?? throw new ArgumentException($"Cannot create instance of '{type}'.");
 
-            var className = type.Name;
+            var className = type.FullName!;
             var renderedText = ((string?)resultMethod.Invoke(template, null)) ??
                 throw new NullReferenceException($"Result is null '{type}'.");
 

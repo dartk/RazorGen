@@ -12,5 +12,6 @@ public static class Program
         WriteLine();
         WriteLine("Why use Scriban inside a Razor template?");
         WriteLine(RazorScribanMadness.Why());  // Because you can!
+        WriteLine(RazorScribanMadness.GetInt());
     }
 }

@@ -13,11 +13,12 @@ public class RazorEngine
             RazorProjectFileSystem.Create(Environment.CurrentDirectory),
             builder =>
             {
-                builder.SetNamespace("Templates");
-                builder.SetBaseType("TemplateBase");
+                builder.SetBaseType("__TemplateBase");
                 builder.ConfigureClass((document, node) =>
                 {
-                    var className = ClassNameFromFilePath.GetClassName(document.Source.FilePath);
+                    var (@namespace, className) =
+                        PathUtil.GetNamespaceAndClassNameFromFilePath(document.Source.FilePath);
+                    builder.SetNamespace(@namespace);
                     node.ClassName = className;
                 });
             });

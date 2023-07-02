@@ -72,10 +72,7 @@ public class CSharpCompiler
 using System.Text;
 
 
-namespace Templates;
-
-
-public abstract class TemplateBase
+public abstract class __TemplateBase
 {
     private readonly StringBuilder _stringBuilder = new();
     private string? _attributeSuffix;
