@@ -69,8 +69,7 @@ and `CompilerGeneratedFilesOutputPath` in the project file:
 <PropertyGroup>
     <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
     <!--Generated files will be saved to 'obj\GeneratedFiles' folder-->
-    <CompilerGeneratedFilesOutputPath>$(BaseIntermediateOutputPath)\GeneratedFiles
-    </CompilerGeneratedFilesOutputPath>
+    <CompilerGeneratedFilesOutputPath>$(BaseIntermediateOutputPath)\GeneratedFiles</CompilerGeneratedFilesOutputPath>
 </PropertyGroup>
 ```
 
@@ -117,11 +116,11 @@ Create a file `RazorScribanMadness.razor`:
 namespace Example.Netstandard2_0;
 
 // 'partial' is used for JetBrains Rider, it's linter thinks that a '.razor' file declares
-// a class, and will treat the generated code as second declaration, highlighting errors
+// a class, and will treat the generated code as second declaration highlighting errors
 // in places where the class is being used.
 public static partial class RazorScribanMadness
 {
-    @using Scriban
+    @using global::Scriban
     @{
         @:public static string Why() => "@(RenderScriban())";
 
@@ -140,7 +139,7 @@ The template above will generate following code:
 namespace Example.Netstandard2_0;
 
 // 'partial' is used for JetBrains Rider, it's linter thinks that a '.razor' file declares
-// a class, and will treat the generated code as second declaration, highlighting errors
+// a class, and will treat the generated code as second declaration highlighting errors
 // in places where the class is being used.
 public static partial class RazorScribanMadness
 {
