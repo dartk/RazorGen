@@ -23,8 +23,13 @@ public class RazorGen : IIncrementalGenerator
 
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
+        var formatCodeProvider = context.AnalyzerConfigOptionsProvider.Select(
+            (optionsProvider, _) => optionsProvider.GlobalOptions
+                    .TryGetValue("build_property.RazorGen_FormatCode", out var value)
+                && value.Equals("true", StringComparison.InvariantCultureIgnoreCase));
+
         var provider = RazorTemplatesProvider().Combine(ProjectReferencesProvider());
-        context.RegisterSourceOutput(provider, this.GenerateSources);
+        context.RegisterSourceOutput(provider.Combine(formatCodeProvider), this.GenerateSources);
         return;
 
         // Non-empty additional files with '.razor' extension except those that start
@@ -84,9 +89,10 @@ public class RazorGen : IIncrementalGenerator
 
 
     private void GenerateSources(SourceProductionContext context,
-        (ImmutableArray<RazorTemplateSyntaxTree>, ImmutableArray<PortableExecutableReference>) arg)
+        ((ImmutableArray<RazorTemplateSyntaxTree>, ImmutableArray<PortableExecutableReference>),
+            bool FormatCode) arg)
     {
-        var (templates, projectReferences) = arg;
+        var ((templates, projectReferences), formatCode) = arg;
 
         try
         {
@@ -132,6 +138,15 @@ public class RazorGen : IIncrementalGenerator
                                 Location.None,
                                 $"'{template.FileName}' was not rendered"));
                             continue;
+                        }
+
+
+                        if (formatCode)
+                        {
+                            renderedText = CSharpSyntaxTree.ParseText(renderedText)
+                                .GetRoot()
+                                .NormalizeWhitespace()
+                                .ToString();
                         }
 
                         context.AddSource(template.SuggestedGeneratedFileName(), renderedText);
