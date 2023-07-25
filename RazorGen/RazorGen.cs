@@ -140,6 +140,9 @@ public class RazorGen : IIncrementalGenerator
                             continue;
                         }
 
+                        renderedText = renderedText
+                            .Replace("<code>", "")
+                            .Replace("</code>", "");
 
                         if (formatCode)
                         {
