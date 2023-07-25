@@ -24,9 +24,15 @@ public class RazorGen : IIncrementalGenerator
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
         var formatCodeProvider = context.AnalyzerConfigOptionsProvider.Select(
-            (optionsProvider, _) => optionsProvider.GlobalOptions
-                    .TryGetValue("build_property.RazorGen_FormatCode", out var value)
-                && value.Equals("true", StringComparison.InvariantCultureIgnoreCase));
+            (optionsProvider, _) =>
+            {
+                var isFalse = optionsProvider.GlobalOptions.TryGetValue(
+                        "build_property.RazorGen_FormatCode",
+                        out var value)
+                    && value.Equals("false", StringComparison.InvariantCultureIgnoreCase);
+
+                return !isFalse;
+            });
 
         var provider = RazorTemplatesProvider().Combine(ProjectReferencesProvider());
         context.RegisterSourceOutput(provider.Combine(formatCodeProvider), this.GenerateSources);
