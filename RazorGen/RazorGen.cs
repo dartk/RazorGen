@@ -135,6 +135,21 @@ public class RazorGen : IIncrementalGenerator
                     var renderedTextByClassName =
                         output.Items.ToDictionary(x => x.ClassName, x => x.RenderedText);
 
+                    var reservedFileNames = new HashSet<string>();
+
+                    string GetUniqueFileName(string path)
+                    {
+                        var fileName = Path.GetFileNameWithoutExtension(path);
+                        for (var i = 1; reservedFileNames.Contains(fileName); ++i)
+                        {
+                            fileName += i;
+                        }
+
+                        reservedFileNames.Add(fileName);
+
+                        return fileName;
+                    }
+
                     foreach (var template in templates)
                     {
                         if (!renderedTextByClassName.TryGetValue(template.ClassName,
@@ -158,7 +173,8 @@ public class RazorGen : IIncrementalGenerator
                                 .ToString();
                         }
 
-                        context.AddSource(template.SuggestedGeneratedFileName(), renderedText);
+                        var outputFileName = GetUniqueFileName(template.FileName) + ".razor.cs";
+                        context.AddSource(outputFileName, renderedText);
                     }
 
                     break;
@@ -202,9 +218,5 @@ public class RazorGen : IIncrementalGenerator
 
 public record RazorTemplateSyntaxTree(string FileName, SyntaxTree SyntaxTree)
 {
-    public string SuggestedGeneratedFileName() =>
-        $"{Path.GetFileNameWithoutExtension(this.FileName)}.razor.cs_{(uint)this.FileName.GetHashCode()}";
-
-
     public string ClassName => PathUtil.GetFullClassNameFromFilePath(this.FileName);
 }
