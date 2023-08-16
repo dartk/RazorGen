@@ -20,7 +20,7 @@
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageTags>C# Razor templating code generation</PackageTags>
-        <PackageVersion>0.3.0-rc01</PackageVersion>
+        <PackageVersion>0.3.0-rc19</PackageVersion>
     </PropertyGroup>
 
     <ItemGroup>
@@ -83,7 +83,7 @@
     </ItemGroup>
 
     <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-      <Exec Command="dotnet build ../AssemblyRunner/AssemblyRunner.csproj -c Release" />
+        <Exec Command="dotnet build ../AssemblyRunner/AssemblyRunner.csproj -c Release" />
     </Target>
 
 </Project>
