@@ -172,7 +172,8 @@ public class RazorGen : IIncrementalGenerator
                     string GetUniqueFileName(string path)
                     {
                         var fileName = Path.GetFileNameWithoutExtension(path);
-                        for (var i = 1; reservedFileNames.Contains(fileName); ++i)
+                        // ReSharper disable once RedundantSuppressNullableWarningExpression
+                        for (var i = 1; reservedFileNames!.Contains(fileName); ++i)
                         {
                             fileName += i;
                         }
