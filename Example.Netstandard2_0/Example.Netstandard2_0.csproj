@@ -5,6 +5,7 @@
         <Nullable>enable</Nullable>
         <LangVersion>default</LangVersion>
         <TargetFramework>netstandard2.0</TargetFramework>
+        <RazorGen_FormatCode>true</RazorGen_FormatCode>
     </PropertyGroup>
 
     <ItemGroup>
