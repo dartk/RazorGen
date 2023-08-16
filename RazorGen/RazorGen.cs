@@ -1,7 +1,10 @@
 ﻿using System.Collections.Immutable;
+using AssemblyRunnerShared;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using RazorGen.RazorAssembly;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 
 namespace RazorGen;
@@ -52,8 +55,39 @@ public class RazorGen : IIncrementalGenerator
                 {
                     var source =
                         this._razorEngine.GenerateClassForTemplate(file.FilePath, file.Text);
+
                     var syntaxTree = CSharpSyntaxTree.ParseText(source, path: file.FilePath);
-                    return new RazorTemplateSyntaxTree(file.FilePath, syntaxTree);
+                    var root = syntaxTree.GetRoot();
+
+                    var typeDeclaration = root
+                        .DescendantNodesAndSelf()
+                        .OfType<TypeDeclarationSyntax>()
+                        .FirstOrDefault();
+
+                    if (typeDeclaration is null)
+                    {
+                        throw new NullReferenceException(
+                            $"Type declaration was not found '{file.FilePath}'.");
+                    }
+
+                    var attributeList =
+                        AttributeList(
+                            SingletonSeparatedList(
+                                Attribute(
+                                    IdentifierName("__Template"),
+                                    AttributeArgumentList(
+                                        SingletonSeparatedList(
+                                            AttributeArgument(
+                                                LiteralExpression(
+                                                    SyntaxKind.StringLiteralExpression,
+                                                    Literal(file.FilePath))))))));
+
+                    var typeDeclarationWithAttributes =
+                        typeDeclaration.WithAttributeLists(SingletonList(attributeList));
+                    var newRoot = root.ReplaceNode(typeDeclaration, typeDeclarationWithAttributes);
+                    var newSyntaxTree = newRoot.SyntaxTree;
+
+                    return new RazorTemplateSyntaxTree(file.FilePath, newSyntaxTree);
                 })
                 .Collect();
         }
@@ -115,8 +149,12 @@ public class RazorGen : IIncrementalGenerator
                 .Select(reference => reference.FilePath)
                 .ToImmutableArray();
 
+            var assemblyRunnerInput = new AssemblyRunnerInput(
+                Path.GetFullPath(assemblyFile.Path),
+                referencePaths!);
+
             var result =
-                this._assemblyRunner.Run(assemblyFile.Path, referencePaths!, out var output);
+                this._assemblyRunner.Run(assemblyRunnerInput, out var output);
 
             switch (result)
             {

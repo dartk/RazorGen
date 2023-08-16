@@ -1,5 +1,4 @@
-﻿using System.Collections.Immutable;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Resources;
 using System.Runtime.ExceptionServices;
 using System.Text;
@@ -38,14 +37,6 @@ public class AssemblyRunner
         catch
         {
         }
-    }
-
-
-    public AssemblyRunResult Run(string assemblyPath, ImmutableArray<string> references,
-        out AssemblyRunnerOutput output)
-    {
-        assemblyPath = Path.GetFullPath(assemblyPath);
-        return this.Run(new AssemblyRunnerInput(assemblyPath, references), out output);
     }
 
 

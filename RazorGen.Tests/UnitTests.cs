@@ -1,5 +1,6 @@
 using System.Collections.Immutable;
 using System.Reflection;
+using AssemblyRunnerShared;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Newtonsoft.Json;
@@ -27,7 +28,8 @@ public class UnitTests : VerifyBase
             (@"C:\Users\user\Template.razor", new[] { "C", "Users", "user", "Template" }),
             (@"/C/Users/user/Template.razor", new[] { "C", "Users", "user", "Template" }),
             (@"C:\Users\user\My Template.razor", new[] { "C", "Users", "user", "My_Template" }),
-            (@"C:\Users\2 user\12 My Template.razor", new[] { "C", "Users", "_2_user", "_12_My_Template" }),
+            (@"C:\Users\2 user\12 My Template.razor",
+                new[] { "C", "Users", "_2_user", "_12_My_Template" }),
         };
 
         foreach (var (input, output) in data)
@@ -113,7 +115,8 @@ global using System.Threading.Tasks;
         var file = new DisposableFile("output.dll");
         File.WriteAllBytes(file.Path, assemblyBytes!);
 
-        var result = runner.Run(file.Path, ImmutableArray<string>.Empty, out var output);
+        var result = runner.Run(new AssemblyRunnerInput(file.Path, ImmutableArray<string>.Empty),
+            out var output);
         Assert.Equal(AssemblyRunResult.Success, result);
         this._output.WriteLine(JsonConvert.SerializeObject(output, Formatting.Indented));
     }

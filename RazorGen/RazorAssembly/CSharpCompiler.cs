@@ -12,6 +12,7 @@ public class CSharpCompiler
         this._netstandardReferences = new NetstandardReferences();
         this._usingsTree = CSharpSyntaxTree.ParseText(Usings);
         this._templateBaseTree = CSharpSyntaxTree.ParseText(TemplateBase);
+        this._templateAttributeTree = CSharpSyntaxTree.ParseText(TemplateAttribute);
     }
 
 
@@ -19,7 +20,12 @@ public class CSharpCompiler
         IEnumerable<MetadataReference> references, Action<Diagnostic> reportDiagnostic)
     {
         return EmitAssembly(
-            syntaxTrees.Append(this._usingsTree).Append(this._templateBaseTree),
+            syntaxTrees.Concat(new[]
+            {
+                this._usingsTree,
+                this._templateAttributeTree,
+                this._templateBaseTree
+            }),
             this._netstandardReferences.References.Concat(references),
             reportDiagnostic);
     }
@@ -55,9 +61,10 @@ public class CSharpCompiler
     private readonly NetstandardReferences _netstandardReferences;
     private readonly SyntaxTree _usingsTree;
     private readonly SyntaxTree _templateBaseTree;
+    private readonly SyntaxTree _templateAttributeTree;
 
 
-    const string Usings = """
+    private const string Usings = """
         global using System;
         global using System.Collections.Generic;
         global using System.IO;
@@ -66,6 +73,20 @@ public class CSharpCompiler
         global using System.Threading;
         global using System.Threading.Tasks;
         """;
+
+
+    private const string TemplateAttribute = """
+public class __TemplateAttribute : System.Attribute
+{
+    public __TemplateAttribute(string path)
+    {
+        this.Path = path;
+    }
+
+
+    public string Path { get; }
+}
+""";
 
 
     private const string TemplateBase = """

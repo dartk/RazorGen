@@ -45,6 +45,9 @@ internal static class Program
         var templateBaseType = assembly.GetType("__TemplateBase")
             ?? throw new NullReferenceException("__TemplateBase class not found.");
 
+        var templateAttributeType = assembly.GetType("__TemplateAttribute")
+            ?? throw new NullReferenceException("__TemplateAttribute class not found.");
+
         var resultMethod = templateBaseType.GetMethod("Result")
             ?? throw new NullReferenceException("Result method not found in TemplateBase.");
 
@@ -56,6 +59,20 @@ internal static class Program
             if (type.IsAbstract || !type.IsSubclassOf(templateBaseType))
             {
                 continue;
+            }
+
+            // gets template attribute and sets current directory to directory that contains the template
+            {
+                dynamic templateAttribute = type.GetCustomAttribute(templateAttributeType)
+                    ?? throw new NullReferenceException(
+                        $"Class does not have template attribute '{type.FullName}'.");
+
+                string templatePath = templateAttribute.Path;
+                var dir = Path.GetDirectoryName(templatePath);
+                if (dir is not null)
+                {
+                    Environment.CurrentDirectory = dir;
+                }
             }
 
             var template = Activator.CreateInstance(type)
