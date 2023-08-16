@@ -31,7 +31,7 @@ public class AssemblyRunner
 
             if (File.Exists(ConfigFilePath))
             {
-                File.Delete(AssemblyFilePath);
+                File.Delete(ConfigFilePath);
             }
         }
         // ReSharper disable once EmptyGeneralCatchClause
