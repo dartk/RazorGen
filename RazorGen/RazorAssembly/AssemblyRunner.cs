@@ -149,8 +149,7 @@ public class AssemblyRunner
     }
 
 
-    private static readonly string Directory =
-        Path.GetDirectoryName(typeof(AssemblyRunner).Assembly.Location)!;
+    private static readonly string Directory = Path.Combine(Path.GetTempPath(), "RazorGen");
 
 
     private const string AssemblyName = "AssemblyRunner.dll";
